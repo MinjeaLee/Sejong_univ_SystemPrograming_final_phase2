@@ -22,14 +22,14 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 
-#define QUEUE_KEY 12345
+#define QUEUE_KEY 12345		// 메시지 큐 키
 
 typedef struct t_massage
 {
-	long msg_type;
-	int sock;
-	char operation[10];
-	int num1;
+	long msg_type;			// 메시지 타입
+	int sock;				//	클라이언트 소켓 파일 디스크립터
+	char operation[10];		// 연산 종류
+	int num1;				// 두 숫자
 	int num2;
 } message;
 

@@ -31,16 +31,16 @@ typedef struct
 	int num2;
 } operation_data;	
 
-typedef struct t_massage{
-	long msg_type;
-	int sock;
-	char operation[10];
-	int num1;
+typedef struct t_massage{		// 메시지 큐 메시지 구조체
+	long msg_type;				// 메시지 타입
+	int sock;					// 클라이언트 소켓 파일 디스크립터
+	char operation[10];			// 연산 종류
+	int num1;					// 두 숫자
 	int num2;
 }	message;
 
 
 
-void *handle_client(void *sockfd);
+void *handle_client(void *data);
 
 #endif

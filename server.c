@@ -2,9 +2,9 @@
  * Author : Lee Minjae
  * ID     : 21011741
  * dept   : Information Security
- * date   : 2023.12.06
+ * date   : 2023.12.17
  * Contact: leejoy2@sju.ac.kr
- * repo   : https://github.com/MinjeaLee/Sejong_univ_SystemPrograming_final_phase1
+ * repo   : https://github.com/MinjeaLee/Sejong_univ_SystemPrograming_final_phase2
  */
 
 #include "server.h"
@@ -50,14 +50,14 @@ void *handle_client(void *data)
 
 	if (strcmp(msg->operation, "add") == 0)			// 덧셈 연산일 경우
 	{
-		op_data->num1 = msg->num1;		// 문자열을 정수형으로 변환하여 연산 데이터 구조체에 저장
+		op_data->num1 = msg->num1;		//  연산 데이터 구조체에 두 숫자 저장
 		op_data->num2 = msg->num2;
 
 		pthread_create(&thread_id, NULL, addition, op_data);		// 덧셈 연산 스레드 생성
 	}
 	else if (strcmp(msg->operation, "mult") == 0)	// 덧셈 메커니즘과 동일
 	{
-		op_data->num1 = msg->num1;
+		op_data->num1 = msg->num1;		// 연산 데이터 구조체에 두 숫자 저장
 		op_data->num2 = msg->num2;
 
 		pthread_create(&thread_id, NULL, multiplication, op_data);
@@ -79,10 +79,10 @@ int main()
 	socklen_t clilen;						//  클라이언트 주소 정보 구조체
 	struct sockaddr_in serv_addr, cli_addr;	// 서버 및 클라이언트 주소 정보 구조체
 
-	int msgig;
-	message msg;
+	int msgig;						// 메시지 큐 아이디
+	message msg;					// 메시지 큐 메시지 구조체
 
-	msgig = msgget((key_t)QUEUE_KEY, IPC_CREAT | 0666);
+	msgig = msgget((key_t)QUEUE_KEY, IPC_CREAT | 0666);	// 메시지 큐 생성
 	if (msgig == -1)
 	{
 		perror("msgget failed with error");
@@ -112,8 +112,8 @@ int main()
 
 	while (1)
 	{
-		message msg;
-		if (msgrcv(msgig, &msg, sizeof(message) - sizeof(long), 0, 0) == -1)
+		message msg;					// 메시지 큐 메시지 구조체
+		if (msgrcv(msgig, &msg, sizeof(message) - sizeof(long), 0, 0) == -1)	// 메시지 큐에서 메시지 수신
 		{
 			perror("msgrcv failed with error");
 			continue;
@@ -126,14 +126,13 @@ int main()
 			continue;
 		}
 
-		msg.sock = newsockfd;
+		msg.sock = newsockfd;						// 메시지 큐 메시지 구조체에 클라이언트 소켓 파일 디스크립터 저장
 
 		pthread_t thread_id;							// 스레드 아이디
 		message *new_msg = malloc(sizeof(message));	// 메시지 큐 메시지 구조체 동적 할당
 		*new_msg = msg;
 		pthread_create(&thread_id, NULL, handle_client, new_msg);	// 클라이언트 연결 핸들러 스레드 생성
 		pthread_detach(thread_id);					// 스레드 종료시 자원 해제
-		// free(new_msg);
 	}
 
 	close(sockfd);				// 소켓 연결 종료

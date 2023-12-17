@@ -2,9 +2,9 @@
 # * Author : Lee Minjae
 # * ID     : 21011741
 # * dept   : Information Security
-# * date   : 2023.12.06
+# * date   : 2023.12.17
 # * Contact: leejoy2@sju.ac.kr
-# * repo   : https://github.com/MinjeaLee/Sejong_univ_SystemPrograming_final_phase1
+# * repo   : https://github.com/MinjeaLee/Sejong_univ_SystemPrograming_final_phase2
 #
 
 NAME_S = server

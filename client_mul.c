@@ -2,9 +2,9 @@
  * Author : Lee Minjae
  * ID     : 21011741
  * dept   : Information Security
- * date   : 2023.12.06
+ * date   : 2023.12.17
  * Contact: leejoy2@sju.ac.kr
- * repo   : https://github.com/MinjeaLee/Sejong_univ_SystemPrograming_final_phase1
+ * repo   : https://github.com/MinjeaLee/Sejong_univ_SystemPrograming_final_phase2
 */
 
 #include "client.h"
@@ -37,14 +37,29 @@ int main()
 	if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
 		error("ERROR connecting"); // 서버에 연결을 시도, 실패시 에러 메시지를 출력
 
+	int msgid = msgget(QUEUE_KEY, 0666); // 메시지 큐 생성
+	if (msgid == -1)
+	{
+		perror("msgget failed with error");
+		exit(0);
+	}
+
+	message msg; // 메시지 큐 메시지 구조체
+	msg.msg_type = 1;			// 메시지 타입 설정
+	msg.sock = sockfd;			// 소켓 파일 디스크립터 저장
+	strcpy(msg.operation, "mult");	// 연산 종류 저장
+
 	printf("Enter two numbers for addition (x y): "); // 사용자에게 두 숫자를 입력하라는 메시지 출력
 	int x, y;
 	scanf("%d %d", &x, &y); // 두 숫자 입력
-	sprintf(buffer, "mult:%d,%d", x, y); // 버퍼에 두 숫자를 포맷에 맞게 저장 (mul:x,y, mul일 시 앞에 mul 접두사를 붙여줌)
+	msg.num1 = x;
+	msg.num2 = y;
 
-	n = write(sockfd, buffer, strlen(buffer)); // 서버에 데이터 전송
-	if (n < 0)
-		error("ERROR writing to socket"); // 데이터 전송 실패시 에러 메시지 출력
+	if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) // 메시지 큐에 메시지 전송
+	{
+		perror("msgsnd failed");
+		exit(0);
+	}
 
 	bzero(buffer, 256);			   // 버퍼 초기화
 	n = read(sockfd, buffer, 255); // 서버로부터 데이터 수신

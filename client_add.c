@@ -2,9 +2,9 @@
  * Author : Lee Minjae
  * ID     : 21011741
  * dept   : Information Security
- * date   : 2023.12.06
+ * date   : 2023.12.17
  * Contact: leejoy2@sju.ac.kr
- * repo   : https://github.com/MinjeaLee/Sejong_univ_SystemPrograming_final_phase1
+ * repo   : https://github.com/MinjeaLee/Sejong_univ_SystemPrograming_final_phase2
  */
 
 #include "client.h"
@@ -45,15 +45,15 @@ int main()
 	}
 
 	message msg; // 메시지 큐 메시지 구조체
-	msg.msg_type = 1;
-	msg.sock = sockfd;
-	strcpy(msg.operation, "add");
+	msg.msg_type = 1;	// 메시지 타입 설정
+	msg.sock = sockfd;	// 소켓 파일 디스크립터 저장
+	strcpy(msg.operation, "add");	// 연산 종류 저장
 
 
 	printf("Enter two numbers for addition (x y): "); // 사용자에게 두 숫자를 입력하라는 메시지 출력
 	int x, y;
 	scanf("%d %d", &x, &y);				// 두 숫자 입력
-	msg.num1 = x;
+	msg.num1 = x;						// 메시지 구조체에 저장
 	msg.num2 = y;
 
 	if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) // 메시지 큐에 메시지 전송
